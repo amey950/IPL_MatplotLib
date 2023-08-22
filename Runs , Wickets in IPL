@@ -1,0 +1,109 @@
+https://databricks-prod-cloudfront.cloud.databricks.com/public/4027ec902e239c93eaaa8714f173bcfc/1756626461939254/1244958237015415/498034069199426/latest.html
+
+%python
+df = spark.sql('select * from ipl')
+df_p = df.toPandas() 
+df_p.head(2)
+
+import numpy as np;
+import pandas as pd ;
+import seaborn as sns ;
+import matplotlib.pyplot as plt
+a = df_p[df_p['is_wicket'] == 1]
+
+a.groupby(['bowler','bowling_team'])['id'].count().sort_values(ascending = False).head().plot(kind = 'bar').grid()
+
+plt.title('top 5 highest wicket takers and team')     
+plt.xlabel('bowlers' )                
+plt.ylabel('total_wickets' )
+Out[26]: Text(0, 0.5, 'total_wickets')
+
+a = df_p.groupby(['batsman','batting_team'])['batsman_runs'].sum().sort_values(ascending = False).head(5)
+a.plot(kind = 'bar', color = 'orange').grid()
+
+plt.title('top 5 highest runs scorer')     
+plt.xlabel('batsman' )                
+plt.ylabel('total_runs' )
+Out[28]: Text(0, 0.5, 'total_runs')
+
+a = df_p.groupby(['id','batsman'])['batsman_runs'].sum()
+b = a[a.values >= 100]
+b.to_frame(name = None).value_counts('batsman').head(10).plot(kind = 'bar', color = 'blue').grid()
+
+plt.title('10 batsman with highest 100s')     
+plt.xlabel('batsman' )                
+plt.ylabel('total_centuries')
+/root/.ipykernel/2500/command-1017011000154602-93768942:3: FutureWarning: Explicitly passing `name=None` currently preserves the Series' name or uses a default name of 0. This behaviour is deprecated, and in the future `None` will be used as the name of the resulting DataFrame column.
+  b.to_frame(name = None).value_counts('batsman').head(10).plot(kind = 'bar', color = 'blue').grid()
+Out[44]: Text(0, 0.5, 'total_centuries')
+
+a = df_p.groupby(['id','batsman'])['batsman_runs'].sum().sort_values(ascending = False).head(7)
+a.plot(kind = 'bar', color = 'green').grid()
+
+plt.title('top 7 highest score in inning by batsman')     
+plt.xlabel('batsman' )                
+plt.ylabel('score')
+
+
+Out[76]: Text(0, 0.5, 'score')
+
+a = df_p[df_p['inning'] == 1]
+b = a.groupby(['id','batting_team'])['total_runs'].sum().sort_values(ascending = False).head(7)
+b.plot(kind = 'bar', color = 'brown').grid()
+
+plt.title('top 5 total score by team in inning 1')     
+plt.xlabel('batsman' )                
+plt.ylabel('score')
+
+Out[123]: Text(0, 0.5, 'score')
+
+a = df_p.groupby('batting_team')['total_runs'].sum().sort_values(ascending = False).head(6)
+a.plot(kind = 'bar', width = 0.4).grid()
+
+plt.title('total_runs_by_teams')
+
+
+
+AttributeError: module 'matplotlib.pyplot' has no attribute 'ytitle'
+a = df_p.groupby('batting_team')['total_runs'].sum().sort_values(ascending  = False).head(6)
+plt.barh(a.index , a.values, color = 'green')
+plt.grid()
+
+a = df_p[(df_p['is_wicket'] == 1) & (df_p['bowling_team'] == 'Chennai Super Kings')]
+b = a['bowler'].value_counts().head(5)
+
+plt.barh(b.index , b.values, color = 'Gray')
+plt.grid()
+plt.title('total_wickets_by_CSK_Bowlers')
+
+TypeError: bar() missing 2 required positional arguments: 'x' and 'height'
+a = df_p.groupby('over')['total_runs'].sum().sort_values(ascending = False).head(5)
+plt.barh(a.index , a.values , color = 'green')
+plt.grid()
+
+plt.title('top_5_overs_with_highest_runs')
+Out[155]: Text(0.5, 1.0, 'top_5_overs_with_highest_runs')
+
+a = df_p[df_p['batsman_runs'].isin([4,6])]
+a.groupby('batsman')['id'].count().sort_values(ascending  = False).head(10).plot(kind = 'bar').grid()
+
+plt.title('nunber of boundries')
+Out[154]: Text(0.5, 1.0, 'nunber of boundries')
+
+df_p.groupby(['id','batsman','over'])['batsman_runs'].sum().sort_values(ascending = False).head(5).plot(kind = 'bar', color = 'yellow')
+
+plt.title('MAXIMUM RUNS SCORED IN SINGLE OVER')
+Out[162]: Text(0.5, 1.0, 'MAXIMUM RUNS SCORED IN SINGLE OVER')
+
+a = df_p[df_p['batsman_runs'].isin([4,6])]
+b = a['bowler'].value_counts().sort_values(ascending = False).head(5)
+plt.barh(b.index , b.values ,  color = 'violet')
+
+plt.title('TOP 5 BOWLERS WHO GAVE MAXIMUM BOUNDRIES',fontsize = 10)
+Out[170]: Text(0.5, 1.0, 'TOP 5 BOWLERS WHO GAVE MAXIMUM BOUNDRIES')
+
+df_p.groupby('bowler')['total_runs'].sum().sort_values(ascending = False).head(10).plot(kind = 'bar',color = 'black').grid()
+
+plt.title('top 10 run giver bowlers')
+Out[179]: Text(0.5, 1.0, 'top 10 run giver bowlers')
+
